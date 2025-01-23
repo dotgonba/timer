@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown to Drink Legally</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom right, #ff6f91, #ffb3d9); /* Restored original gradient */
+            color: white;
+            text-align: center;
+            overflow: hidden;
+        }
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        #timer {
+            font-size: 2rem;
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .heart {
+            font-size: 2.5rem;
+            margin: 0 10px;
+        }
+        #celebration {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+        video {
+            max-width: 100%;
+            height: auto;
+            border: 5px solid white;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="countdown-section">
+        <h1>Countdown to Drink Legally</h1>
+        <div id="timer">
+            <span class="heart">❤️</span>
+            <div id="timer-text">Loading...</div>
+            <span class="heart">❤️</span>
+        </div>
+    </div>
+    <div id="celebration">
+        <h1>🎉 Happy 21st baby! 🎉</h1>
+        <video id="celebration-video" controls autoplay muted>
+            <source src="1.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <script>
+        function updateCountdown() {
+            // Get the current time in UTC and adjust for Chicago timezone (UTC-6 or UTC-5 during DST)
+            const nowUTC = new Date();
+            const nowCST = new Date(nowUTC.toLocaleString("en-US", { timeZone: "America/Chicago" }));
+
+            // Set target time to 3:08 PM (Chicago time)
+            const targetTime = new Date(nowCST);
+            targetTime.setHours(15, 8, 0, 0); // 3:08 PM CST
+
+            // If the current time is already past 3:08 PM, set the target time to tomorrow
+            if (nowCST > targetTime) {
+                targetTime.setDate(targetTime.getDate() + 1);
+            }
+
+            const timeRemaining = targetTime - nowCST;
+
+            if (timeRemaining <= 0) {
+                // Stop the countdown and trigger celebration
+                clearInterval(timerInterval);
+                document.getElementById('countdown-section').style.display = "none"; // Hide countdown
+                document.getElementById('celebration').style.display = "block"; // Show celebration
+                document.getElementById('celebration-video').play(); // Play video
+                return;
+            }
+
+            const hours = Math.floor((timeRemaining / (1000 * 60 * 60)) % 24);
+            const minutes = Math.floor((timeRemaining / (1000 * 60)) % 60);
+            const seconds = Math.floor((timeRemaining / 1000) % 60);
+
+            document.getElementById('timer-text').innerHTML = 
+                `${hours}h ${minutes}m ${seconds}s`;
+        }
+
+        // Update the countdown every second
+        const timerInterval = setInterval(updateCountdown, 1000);
+        updateCountdown(); // Run immediately
+    </script>
+</body>
+</html>
